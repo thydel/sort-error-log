@@ -2,6 +2,8 @@ top:; @date
 
 today     := $(shell date +%Y/%m/%d)
 yesterday := $(shell date -d yesterday +%Y/%m/%d)
+daysago   ?= 2
+aday      := $(shell date -d '$(daysago) days ago' +%Y/%m/%d)
 
 http_access := apache-access.d
 http_error  := apache-error.d
@@ -22,8 +24,10 @@ define 00-lines.txt
 )
 endef
 
+include /etc/sort-error-log/fronts.mk
+
 date  ?= yesterday
-nodes ?= node1 node2
+nodes ?= $(fronts)
 logs  ?= http_access http_error php_error
 files := $(foreach node, $(nodes), $(foreach log, $(logs), $(node)/$($(date))/$($(log))/00-lines.txt))
 
